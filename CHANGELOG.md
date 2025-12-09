@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.0 (2025-12-09)
+
+
+### Features
+
+* initial release of LINE Pay Online V4 SDK ([fe35cb9](https://github.com/CarlLee1983/line-pay-online-v4-node/commit/fe35cb967ceae41a19eda6bd368ed3aaf5d5fb1c))
+
 ## [Unreleased]
 
 ## [1.0.0] - 2024-12-09
