@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'bun:test'
 import { Currency, VERSION } from '../src/index'
+import pkg from '../package.json'
 
 describe('line-pay-v4-node', () => {
   describe('VERSION', () => {
     it('should export the current version', () => {
-      expect(VERSION).toBe('0.0.0')
+      expect(VERSION).toBe(pkg.version)
     })
   })
 
