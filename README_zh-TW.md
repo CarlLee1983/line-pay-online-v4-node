@@ -252,14 +252,15 @@ const isValid = LinePayUtils.verifySignature(channelSecret, body, signature)
 ```
 @carllee1983/line-pay-v4/
 ├── src/                    # 原始碼
-│   ├── index.ts           # 主要進入點
-│   ├── LinePayClient.ts   # 客戶端實作
-│   ├── payments/          # 付款操作與型別
-│   ├── enums/             # 列舉 (Currency, PayType 等)
-│   └── domain/            # 領域介面
+├── examples/               # 範例程式
+│   └── nextjs-demo/       # Next.js App Router 範例
 ├── tests/                  # 測試檔案
 └── dist/                   # 建置輸出
 ```
+
+## 🎮 範例程式
+
+請參考 [Next.js Example](./examples/nextjs-demo) 以了解如何在 Next.js App Router 中整合本 SDK。
 
 ## 📄 授權條款
 

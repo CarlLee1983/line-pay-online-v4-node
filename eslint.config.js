@@ -47,6 +47,7 @@ export default tseslint.config(
       'dist/**',
       'node_modules/**',
       'coverage/**',
+      'examples/**',
       '*.config.js',
       '*.config.mjs',
       'build.ts',

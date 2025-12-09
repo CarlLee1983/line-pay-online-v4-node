@@ -250,14 +250,15 @@ const isValid = LinePayUtils.verifySignature(channelSecret, body, signature)
 ```
 @carllee1983/line-pay-v4/
 ├── src/                    # Source code
-│   ├── index.ts           # Main entry point
-│   ├── LinePayClient.ts   # Client Implementation
-│   ├── payments/          # Payment Operations & Types
-│   ├── enums/             # Enums (Currency, PayType, etc)
-│   └── domain/            # Domain Interfaces
+├── examples/               # Usage examples
+│   └── nextjs-demo/       # Next.js App Router example
 ├── tests/                  # Test files
 └── dist/                   # Build output
 ```
+
+## 🎮 Examples
+
+Check out the [Next.js Example](./examples/nextjs-demo) for a complete integration with App Router.
 
 ## 📄 License
 

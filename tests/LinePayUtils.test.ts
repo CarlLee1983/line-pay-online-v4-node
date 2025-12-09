@@ -3,6 +3,11 @@ import { LinePayUtils } from '../src/LinePayUtils'
 import { createHmac } from 'node:crypto'
 
 describe('LinePayUtils', () => {
+  it('should be instantiable (private constructor coverage)', () => {
+    // @ts-expect-error Testing private constructor
+    new LinePayUtils()
+  })
+
   describe('generateSignature', () => {
     it('should generate correct HMAC-SHA256 signature', () => {
       const secret = 'd9c2e0b1c2b3e4f5a6b7c8d9e0f1a2b3'

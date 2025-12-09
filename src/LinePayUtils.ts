@@ -2,6 +2,9 @@
 import { createHmac } from 'node:crypto'
 
 export class LinePayUtils {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private constructor() {}
+
   /**
    * Generate HMAC-SHA256 Signature
    * Used for X-LINE-Authorization header

@@ -172,7 +172,7 @@ describe('LinePayClient', () => {
     ]
     expect(url).toContain('/v4/payments/12345/refund')
     expect(init.method).toBe('POST')
-    expect(init.body).toContain('"refundAmount":50')
+    expect(init.body).toBe(JSON.stringify({ refundAmount: 50 }))
   })
 
   it('should call getDetails correctly with params', async () => {
@@ -191,8 +191,29 @@ describe('LinePayClient', () => {
     ]
     expect(url).toContain('/v4/payments/requests')
     expect(url).toContain('transactionId=123%2C456')
+    expect(url).toContain('transactionId=123%2C456')
     expect(url).toContain('fields=amount')
     expect(init.method).toBe('GET')
+  })
+
+  it('should call getDetails with orderId correctly', async () => {
+    const client = new LinePayClient(config)
+    const fetchMock = mock(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ returnCode: '0000', info: [] }))
+      )
+    )
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    await client.getDetails({ orderId: ['ORDER_1', 'ORDER_2'] })
+
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [
+      string,
+      RequestInit,
+    ]
+    expect(url).toContain('/v4/payments/requests')
+    expect(init.method).toBe('GET')
+    expect(url).toContain('orderId=ORDER_1%2CORDER_2')
   })
 
   it('should call checkStatus correctly', async () => {
@@ -250,5 +271,58 @@ describe('LinePayClient', () => {
         redirectUrls: { confirmUrl: '', cancelUrl: '' },
       })
     ).rejects.toThrow('Network Error')
+  })
+
+  it('should handle timeout errors correctly', () => {
+    const client = new LinePayClient(config)
+    const fetchMock = mock(() => {
+      const error = new Error('The operation was aborted')
+      error.name = 'AbortError'
+      return Promise.reject(error)
+    })
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    expect(
+      client.requestPayment({
+        amount: 100,
+        currency: Currency.TWD,
+        orderId: '1',
+        packages: [],
+        redirectUrls: { confirmUrl: '', cancelUrl: '' },
+      })
+    ).rejects.toThrow('Request timeout after 20000ms')
+  })
+
+  it('should abort request on actual timeout (coverage for setTimeout)', async () => {
+    const shortTimeoutClient = new LinePayClient({
+      ...config,
+      timeout: 1,
+    })
+
+    // Mock fetch to never resolve (or resolve slow)
+    const fetchMock = mock((_url, options) => {
+      return new Promise<Response>((_, reject) => {
+        const signal = (options as RequestInit).signal
+        if (signal?.aborted === true) {
+          const err = new Error('The operation was aborted')
+          err.name = 'AbortError'
+          reject(err)
+          return
+        }
+        signal?.addEventListener('abort', () => {
+          const err = new Error('The operation was aborted')
+          err.name = 'AbortError'
+          reject(err)
+        })
+      })
+    })
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    try {
+      await shortTimeoutClient.checkStatus('123')
+      expect.unreachable('Should have thrown')
+    } catch (error) {
+      expect((error as Error).message).toBe('Request timeout after 1ms')
+    }
   })
 })
