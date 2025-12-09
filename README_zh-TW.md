@@ -80,14 +80,20 @@ try {
             ]
         })
         .setRedirectUrls(
-            'https://example.com/confirm',
-            'https://example.com/cancel'
+            'https://example.com/confirm', // 您的伺服器確認頁面
+            'https://example.com/cancel'   // 您的伺服器取消頁面
         )
         .setOptions({ display: { locale: 'zh_TW' } }) // 選填
         .send()
 
-    console.log('付款網址:', response.info.paymentUrl.web)
-    console.log('交易編號:', response.info.transactionId)
+    // 取得付款網址與交易編號
+    const paymentUrl = response.info.paymentUrl.web
+    const transactionId = response.info.transactionId
+
+    console.log('付款網址:', paymentUrl)
+    console.log('交易編號:', transactionId)
+
+    // 此時將使用者導向 paymentUrl
 
 } catch (error) {
     console.error('付款請求失敗:', error)
@@ -96,21 +102,82 @@ try {
 
 > **替代方式：** 您也可以直接使用 `new RequestPayment(client)`。
 
-### 3. 確認付款
+### 3. 💳 線上付款完整流程
 
-使用者在 LINE 上核准付款後，會被重導向到您的 `confirmUrl`。此時您需要確認交易。
+參考 [LINE Pay Online API 文件](https://developers-pay.line.me/zh/online)，完整的線上付款流程包含三個主要步驟：
+
+#### 步驟 1：建立付款請求並導向使用者
+
+您的後端伺服器呼叫 `requestPayment` API，取得 `paymentUrl` 並將使用者瀏覽器導向該網址。
 
 ```typescript
-const transactionId = '123456789' // 從 query param 取得
-const response = await client.confirm(transactionId, {
-    amount: 100,
-    currency: Currency.TWD
-})
+// 後端程式碼 (Node.js/Express 範例)
+app.post('/api/checkout', async (req, res) => {
+    const orderId = `ORDER_${Date.now()}`
+    
+    // 1. 呼叫 LINE Pay API
+    const result = await client.payment()
+        .setAmount(100)
+        .setCurrency(Currency.TWD)
+        .setOrderId(orderId)
+        .addPackage({
+            id: 'pkg-1',
+            amount: 100,
+            products: [{ name: '商品 A', quantity: 1, price: 100 }]
+        })
+        .setRedirectUrls(
+            'https://your-domain.com/pay/confirm', // 用戶核准後導回此處
+            'https://your-domain.com/pay/cancel'
+        )
+        .send()
 
-if (response.returnCode === '0000') {
-    console.log('付款成功！')
-}
+    // 2. 將 paymentUrl 回傳給前端，或直接重導向
+    // 注意：交易編號 (transactionId) 應該暫存於資料庫以供後續驗證
+    res.json({ 
+        url: result.info.paymentUrl.web, 
+        transactionId: result.info.transactionId 
+    })
+})
 ```
+
+#### 步驟 2：使用者在 LINE Pay 上授權
+
+使用者在 LINE Pay 頁面上確認付款內容並授權。授權成功後，LINE Pay 會將使用者導向您設定的 `confirmUrl`，並附帶 `transactionId` 與 `orderId` 參數：
+
+`https://your-domain.com/pay/confirm?transactionId=123456789&orderId=ORDER_...`
+
+#### 步驟 3：確認付款 (Confirm Payment)
+
+當使用者回到您的 `confirmUrl` 時，您**必須**呼叫 Confirm API 來完成交易。如果未在有效時間內呼叫，交易將會過期。
+
+```typescript
+// 後端程式碼 (處理 confirmUrl 路由)
+app.get('/pay/confirm', async (req, res) => {
+    const { transactionId, orderId } = req.query
+    
+    try {
+        // 3. 呼叫 Confirm API 完成交易
+        const response = await client.confirm(transactionId as string, {
+            amount: 100, // 注意：金額必須與請求時一致
+            currency: Currency.TWD
+        })
+
+        if (response.returnCode === '0000') {
+            // 付款成功
+            console.log('交易完成:', response.info)
+            res.redirect('/payment/success')
+        } else {
+            console.error('付款失敗:', response.returnMessage)
+            res.redirect('/payment/failure')
+        }
+    } catch (error) {
+        console.error('API 錯誤:', error)
+        res.redirect('/payment/error')
+    }
+})
+```
+
+
 
 ### 4. 其他操作
 

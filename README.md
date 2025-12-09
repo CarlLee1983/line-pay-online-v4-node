@@ -80,14 +80,20 @@ try {
             ]
         })
         .setRedirectUrls(
-            'https://example.com/confirm',
-            'https://example.com/cancel'
+            'https://example.com/confirm', // Your server confirm URL
+            'https://example.com/cancel'   // Your server cancel URL
         )
         .setOptions({ display: { locale: 'en' } }) // Optional
         .send()
 
-    console.log('Payment URL:', response.info.paymentUrl.web)
-    console.log('Transaction ID:', response.info.transactionId)
+    // Get Payment URL and Transaction ID
+    const paymentUrl = response.info.paymentUrl.web
+    const transactionId = response.info.transactionId
+
+    console.log('Payment URL:', paymentUrl)
+    console.log('Transaction ID:', transactionId)
+
+    // Redirect user to paymentUrl...
 
 } catch (error) {
     console.error('Payment Request Failed:', error)
@@ -96,20 +102,79 @@ try {
 
 > **Alternative:** You can also use `new RequestPayment(client)` directly if preferred.
 
-### 3. Confirm Payment
+### 3. 💳 Complete Online Payment Flow
 
-After the user approves the payment on LINE, they are redirected to your `confirmUrl`. You must then confirm the transaction.
+Referencing the [LINE Pay Online API Guide](https://developers-pay.line.me/en/online-apis), the standard flow consists of 3 main steps:
+
+#### Step 1: Request Payment & Redirect User
+
+Your backend server calls the `requestPayment` API to get a `paymentUrl`, then redirects the user's browser to that URL.
 
 ```typescript
-const transactionId = '123456789' // From query param
-const response = await client.confirm(transactionId, {
-    amount: 100,
-    currency: Currency.TWD
-})
+// Backend Code (Node.js/Express Example)
+app.post('/api/checkout', async (req, res) => {
+    const orderId = `ORDER_${Date.now()}`
+    
+    // 1. Call LINE Pay API
+    const result = await client.payment()
+        .setAmount(100)
+        .setCurrency(Currency.TWD)
+        .setOrderId(orderId)
+        .addPackage({
+            id: 'pkg-1',
+            amount: 100,
+            products: [{ name: 'Product A', quantity: 1, price: 100 }]
+        })
+        .setRedirectUrls(
+            'https://your-domain.com/pay/confirm', // Redirect here after approval
+            'https://your-domain.com/pay/cancel'
+        )
+        .send()
 
-if (response.returnCode === '0000') {
-    console.log('Payment Successful!')
-}
+    // 2. Return paymentUrl to frontend or redirect directly
+    // Note: Store transactionId in your DB to verify later
+    res.json({ 
+        url: result.info.paymentUrl.web, 
+        transactionId: result.info.transactionId 
+    })
+})
+```
+
+#### Step 2: User Authorization
+
+The user confirms the payment on the LINE Pay payment page. Upon success, LINE Pay redirects the user back to your `confirmUrl` with `transactionId` and `orderId` parameters:
+
+`https://your-domain.com/pay/confirm?transactionId=123456789&orderId=ORDER_...`
+
+#### Step 3: Confirm Payment
+
+When the user returns to your `confirmUrl`, you **MUST** call the Confirm API to finalize the transaction. If not called within the expiration window, the transaction will lapse.
+
+```typescript
+// Backend Code (Handle confirmUrl route)
+app.get('/pay/confirm', async (req, res) => {
+    const { transactionId, orderId } = req.query
+    
+    try {
+        // 3. Call Confirm API to complete transaction
+        const response = await client.confirm(transactionId as string, {
+            amount: 100, // Must match the amount requested
+            currency: Currency.TWD
+        })
+
+        if (response.returnCode === '0000') {
+            // Success
+            console.log('Transaction Completed:', response.info)
+            res.redirect('/payment/success')
+        } else {
+            console.error('Payment Failed:', response.returnMessage)
+            res.redirect('/payment/failure')
+        }
+    } catch (error) {
+        console.error('API Error:', error)
+        res.redirect('/payment/error')
+    }
+})
 ```
 
 ### 4. Other Operations
