@@ -59,12 +59,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CarlLee1983/line-pay-v4-node.git"
+    "url": "git+https://github.com/CarlLee1983/line-pay-online-v4-node.git"
   },
   "bugs": {
-    "url": "https://github.com/CarlLee1983/line-pay-v4-node/issues"
+    "url": "https://github.com/CarlLee1983/line-pay-online-v4-node/issues"
   },
-  "homepage": "https://github.com/CarlLee1983/line-pay-v4-node#readme",
+  "homepage": "https://github.com/CarlLee1983/line-pay-online-v4-node#readme",
   "engines": {
     "node": ">=18.0.0"
   },
