@@ -1,0 +1,178 @@
+# @carllee1983/line-pay-v4
+
+[![npm version](https://img.shields.io/npm/v/@carllee1983/line-pay-v4.svg)](https://www.npmjs.com/package/@carllee1983/line-pay-v4)
+[![CI](https://github.com/CarlLee1983/line-pay-v4-node/actions/workflows/ci.yml/badge.svg)](https://github.com/CarlLee1983/line-pay-v4-node/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/CarlLee1983/line-pay-v4-node)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
+
+> 🌏 [繁體中文](./README_zh-TW.md) | English
+
+LINE Pay V4 API SDK for Node.js - Type-safe, modern, and production-ready.
+
+## ✨ Features
+
+- 🚀 **Modern TypeScript** - Built with TypeScript 5.7+ and strict type checking
+- 🛠 **Builder Pattern** - Fluent interface for constructing payment requests
+- 📦 **Dual Module Support** - Works with both ESM and CommonJS
+- 🔒 **Type-Safe** - Full type definitions for all Requests and Responses
+- ⚡ **Lightweight** - Minimal dependencies (only `node:crypto` and `fetch`)
+- 🧪 **100% Test Coverage** - Thoroughly tested and reliable
+
+## 📦 Installation
+
+```bash
+# npm
+npm install @carllee1983/line-pay-v4
+
+# yarn
+yarn add @carllee1983/line-pay-v4
+
+# pnpm
+pnpm add @carllee1983/line-pay-v4
+
+# bun
+bun add @carllee1983/line-pay-v4
+```
+
+## 🚀 Usage
+
+### 1. Initialize Client
+
+```typescript
+import { LinePayClient } from '@carllee1983/line-pay-v4'
+
+const client = new LinePayClient({
+  channelId: 'YOUR_CHANNEL_ID',
+  channelSecret: 'YOUR_CHANNEL_SECRET',
+  env: 'sandbox', // or 'production'
+  timeout: 5000 // optional, default 20000ms
+})
+```
+
+### 2. Request Payment
+
+Use the `RequestPayment` builder to construct payment requests with built-in validation.
+
+The builder automatically validates:
+- Required fields (amount, currency, orderId, packages, redirectUrls)
+- Total amount matches sum of package amounts
+- Each package amount matches sum of product amounts
+
+```typescript
+import { Currency } from '@carllee1983/line-pay-online-v4'
+
+try {
+    // Use client.payment() factory method (recommended)
+    const response = await client.payment()
+        .setAmount(100)
+        .setCurrency(Currency.TWD)
+        .setOrderId('ORDER_20231201_001')
+        .addPackage({
+            id: 'PKG_1',
+            amount: 100,
+            products: [
+                {
+                    name: 'Premium Plan',
+                    quantity: 1,
+                    price: 100
+                }
+            ]
+        })
+        .setRedirectUrls(
+            'https://example.com/confirm',
+            'https://example.com/cancel'
+        )
+        .setOptions({ display: { locale: 'en' } }) // Optional
+        .send()
+
+    console.log('Payment URL:', response.info.paymentUrl.web)
+    console.log('Transaction ID:', response.info.transactionId)
+
+} catch (error) {
+    console.error('Payment Request Failed:', error)
+}
+```
+
+> **Alternative:** You can also use `new RequestPayment(client)` directly if preferred.
+
+### 3. Confirm Payment
+
+After the user approves the payment on LINE, they are redirected to your `confirmUrl`. You must then confirm the transaction.
+
+```typescript
+const transactionId = '123456789' // From query param
+const response = await client.confirm(transactionId, {
+    amount: 100,
+    currency: Currency.TWD
+})
+
+if (response.returnCode === '0000') {
+    console.log('Payment Successful!')
+}
+```
+
+### 4. Other Operations
+
+#### Capture Payment
+For "AUTHORIZATION" flows where capture is manual.
+
+```typescript
+await client.capture(transactionId, {
+    amount: 100,
+    currency: Currency.TWD
+})
+```
+
+#### Void Payment
+Void an authorized but not yet captured payment.
+
+```typescript
+await client.void(transactionId)
+```
+
+#### Refund Payment
+Refund a completed payment.
+
+```typescript
+// Full Refund
+await client.refund(transactionId)
+
+// Partial Refund
+await client.refund(transactionId, { refundAmount: 50 })
+```
+
+#### Get Payment Details
+Query transaction history.
+
+```typescript
+const details = await client.getDetails({
+    transactionId: ['123456789'],
+    fields: 'transactionId,amount,currency'
+})
+```
+
+#### Check Payment Status
+Check the status of a specific transaction.
+
+```typescript
+const status = await client.checkStatus(transactionId)
+```
+
+## 🏗️ Project Structure
+
+```
+@carllee1983/line-pay-v4/
+├── src/                    # Source code
+│   ├── index.ts           # Main entry point
+│   ├── LinePayClient.ts   # Client Implementation
+│   ├── payments/          # Payment Operations & Types
+│   ├── enums/             # Enums (Currency, PayType, etc)
+│   └── domain/            # Domain Interfaces
+├── tests/                  # Test files
+└── dist/                   # Build output
+```
+
+## 📄 License
+
+MIT

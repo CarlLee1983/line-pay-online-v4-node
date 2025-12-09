@@ -1,0 +1,8 @@
+[test]
+# Enable coverage by default during test runs
+coverage = true
+
+# Coverage output directory
+coverageDir = "coverage"
+
+# Threshold enforcement handled via CLI in test:ci script
