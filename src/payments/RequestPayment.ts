@@ -7,6 +7,14 @@ import type {
   RedirectUrls,
 } from './PaymentRequest'
 import type { RequestPaymentResponse } from './PaymentResponse'
+import { LinePayValidationError } from '../errors/LinePayError'
+
+/**
+ * 金額比較容差值
+ * 用於處理浮點數計算時的精度問題
+ * 0.01 適用於大多數貨幣的最小單位
+ */
+const AMOUNT_TOLERANCE = 0.01
 
 /**
  * Payment Request Operation
@@ -113,23 +121,32 @@ export class RequestPayment {
    * Validates the constructed request parameters.
    * Checks for required fields and data consistency (e.g., amount matching).
    *
-   * @throws {Error} If any required field is missing or if amount calculations are inconsistent
+   * @throws {LinePayValidationError} If any required field is missing or if amount calculations are inconsistent
    */
   validate(): void {
     if (this.amount === undefined || this.amount < 0) {
-      throw new Error('Amount is required and must be non-negative')
+      throw new LinePayValidationError(
+        'Amount is required and must be non-negative',
+        'amount'
+      )
     }
     if (this.currency === undefined) {
-      throw new Error('Currency is required')
+      throw new LinePayValidationError('Currency is required', 'currency')
     }
     if (this.orderId === undefined || this.orderId === '') {
-      throw new Error('OrderId is required')
+      throw new LinePayValidationError('OrderId is required', 'orderId')
     }
     if (this.packages.length === 0) {
-      throw new Error('At least one package is required')
+      throw new LinePayValidationError(
+        'At least one package is required',
+        'packages'
+      )
     }
     if (this.redirectUrls === undefined) {
-      throw new Error('Redirect URLs are required')
+      throw new LinePayValidationError(
+        'Redirect URLs are required',
+        'redirectUrls'
+      )
     }
 
     // Validate Package Amounts Sum
@@ -137,9 +154,10 @@ export class RequestPayment {
       (sum, pkg) => sum + pkg.amount,
       0
     )
-    if (Math.abs(packagesTotal - this.amount) > Number.EPSILON) {
-      throw new Error(
-        `Sum of package amounts (${String(packagesTotal)}) does not match total amount (${String(this.amount)})`
+    if (Math.abs(packagesTotal - this.amount) > AMOUNT_TOLERANCE) {
+      throw new LinePayValidationError(
+        `Sum of package amounts (${String(packagesTotal)}) does not match total amount (${String(this.amount)})`,
+        'packages'
       )
     }
 
@@ -149,9 +167,10 @@ export class RequestPayment {
         (sum, prod) => sum + prod.quantity * prod.price,
         0
       )
-      if (Math.abs(productsTotal - pkg.amount) > Number.EPSILON) {
-        throw new Error(
-          `Sum of product amounts (${String(productsTotal)}) in package index ${String(index)} does not match package amount (${String(pkg.amount)})`
+      if (Math.abs(productsTotal - pkg.amount) > AMOUNT_TOLERANCE) {
+        throw new LinePayValidationError(
+          `Sum of product amounts (${String(productsTotal)}) in package index ${String(index)} does not match package amount (${String(pkg.amount)})`,
+          `packages[${String(index)}].products`
         )
       }
     })
@@ -162,7 +181,7 @@ export class RequestPayment {
    * Automatically calls {@link validate} before building.
    *
    * @returns The constructed PaymentRequestBody ready for the API
-   * @throws {Error} If validation fails
+   * @throws {LinePayValidationError} If validation fails
    */
   toBody(): PaymentRequestBody {
     this.validate()
@@ -175,7 +194,7 @@ export class RequestPayment {
       this.orderId === undefined ||
       this.redirectUrls === undefined
     ) {
-      throw new Error('Validation failed')
+      throw new LinePayValidationError('Validation failed unexpectedly')
     }
 
     const baseBody: PaymentRequestBody = {

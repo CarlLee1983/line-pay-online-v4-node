@@ -18,6 +18,16 @@ export { RequestPayment } from './payments/RequestPayment'
 export { LinePayUtils } from './LinePayUtils'
 
 /**
+ * Errors
+ */
+export {
+  LinePayError,
+  LinePayTimeoutError,
+  LinePayConfigError,
+  LinePayValidationError,
+} from './errors/LinePayError'
+
+/**
  * Configuration
  */
 export type { LinePayConfig } from './config/types'
@@ -59,4 +69,6 @@ export type {
   RefundInfo,
   PaymentDetailsInfo,
   CheckStatusInfo,
+  ProductInfo,
+  PackageInfo,
 } from './payments/PaymentResponse'

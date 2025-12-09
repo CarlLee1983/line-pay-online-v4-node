@@ -6,6 +6,7 @@ export interface LinePayBaseResponse<T = unknown> {
    * Return Code
    * - '0000': Success
    * - Others: Error
+   * @see https://pay.line.me/documents/online_v4.html
    */
   returnCode: string
 
@@ -18,6 +19,71 @@ export interface LinePayBaseResponse<T = unknown> {
    * Result Information (Present only if success)
    */
   info?: T
+}
+
+/**
+ * 回應中的產品資訊
+ */
+export interface ProductInfo {
+  /**
+   * 產品 ID
+   */
+  id?: string
+
+  /**
+   * 產品名稱
+   */
+  name: string
+
+  /**
+   * 產品圖片 URL
+   */
+  imageUrl?: string
+
+  /**
+   * 數量
+   */
+  quantity: number
+
+  /**
+   * 單價
+   */
+  price: number
+
+  /**
+   * 原價（用於顯示）
+   */
+  originalPrice?: number
+}
+
+/**
+ * 回應中的包裝資訊
+ */
+export interface PackageInfo {
+  /**
+   * 包裝 ID
+   */
+  id: string
+
+  /**
+   * 包裝金額
+   */
+  amount: number
+
+  /**
+   * 使用者手續費
+   */
+  userFeeAmount?: number
+
+  /**
+   * 包裝名稱
+   */
+  name?: string
+
+  /**
+   * 產品列表
+   */
+  products: ProductInfo[]
 }
 
 /**
@@ -66,10 +132,49 @@ export interface PayInfo {
  * Info for Confirm/Capture Response
  */
 export interface PaymentConfirmationInfo {
+  /**
+   * 商家訂單 ID
+   */
   orderId: string
+
+  /**
+   * 交易 ID（19 位數字字串）
+   */
   transactionId: string
+
+  /**
+   * 付款資訊列表
+   */
   payInfo: PayInfo[]
-  packages?: unknown[] // Detailed packages info
+
+  /**
+   * 包裝詳細資訊
+   */
+  packages?: PackageInfo[]
+
+  /**
+   * 配送資訊
+   */
+  shipping?: {
+    methodId: string
+    feeAmount: number
+    address?: {
+      country?: string
+      postalCode?: string
+      state?: string
+      city?: string
+      detail?: string
+      optional?: string
+      recipient?: {
+        firstName?: string
+        lastName?: string
+        firstNameOptional?: string
+        lastNameOptional?: string
+        email?: string
+        phoneNo?: string
+      }
+    }
+  }
 }
 
 /**

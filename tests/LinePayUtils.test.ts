@@ -50,6 +50,71 @@ describe('LinePayUtils', () => {
 
       expect(LinePayUtils.verifySignature(secret, data, signature)).toBe(false)
     })
+
+    it('should return false for signature with different length (timing-safe)', () => {
+      const secret = 'secret'
+      const data = 'some-data-to-sign'
+      // 建立一個長度不同的簽章
+      const shortSignature = 'short'
+      const longSignature =
+        'very-long-signature-that-is-definitely-not-the-correct-length-for-base64-hmac'
+
+      expect(LinePayUtils.verifySignature(secret, data, shortSignature)).toBe(
+        false
+      )
+      expect(LinePayUtils.verifySignature(secret, data, longSignature)).toBe(
+        false
+      )
+    })
+  })
+
+  describe('validateTransactionId', () => {
+    it('should not throw for valid 19-digit transactionId', () => {
+      expect(() => {
+        LinePayUtils.validateTransactionId('1234567890123456789')
+      }).not.toThrow()
+    })
+
+    it('should throw for transactionId with less than 19 digits', () => {
+      expect(() => {
+        LinePayUtils.validateTransactionId('123456789')
+      }).toThrow('Invalid transactionId format')
+    })
+
+    it('should throw for transactionId with more than 19 digits', () => {
+      expect(() => {
+        LinePayUtils.validateTransactionId('12345678901234567890')
+      }).toThrow('Invalid transactionId format')
+    })
+
+    it('should throw for transactionId with non-digit characters', () => {
+      expect(() => {
+        LinePayUtils.validateTransactionId('123456789012345678a')
+      }).toThrow('Invalid transactionId format')
+    })
+
+    it('should throw for empty transactionId', () => {
+      expect(() => {
+        LinePayUtils.validateTransactionId('')
+      }).toThrow('Invalid transactionId format')
+    })
+  })
+
+  describe('isValidTransactionId', () => {
+    it('should return true for valid 19-digit transactionId', () => {
+      expect(LinePayUtils.isValidTransactionId('1234567890123456789')).toBe(
+        true
+      )
+    })
+
+    it('should return false for invalid transactionId', () => {
+      expect(LinePayUtils.isValidTransactionId('123')).toBe(false)
+      expect(LinePayUtils.isValidTransactionId('12345678901234567890')).toBe(
+        false
+      )
+      expect(LinePayUtils.isValidTransactionId('abc')).toBe(false)
+      expect(LinePayUtils.isValidTransactionId('')).toBe(false)
+    })
   })
 
   describe('buildQueryString', () => {

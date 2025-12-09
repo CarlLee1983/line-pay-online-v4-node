@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
-import { createHmac } from 'node:crypto'
+import { createHmac, timingSafeEqual } from 'node:crypto'
+
+/**
+ * Transaction ID 驗證正規表達式
+ * LINE Pay transactionId 是 19 位數字
+ */
+const TRANSACTION_ID_REGEX = /^\d{19}$/
 
 export class LinePayUtils {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -21,7 +27,8 @@ export class LinePayUtils {
   }
 
   /**
-   * Verify HMAC-SHA256 Signature
+   * Verify HMAC-SHA256 Signature (Timing-Safe)
+   * 使用 timingSafeEqual 防止 Timing Attack
    * @param secret Channel Secret
    * @param data Raw data that was signed
    * @param signature Received signature
@@ -32,7 +39,43 @@ export class LinePayUtils {
     signature: string
   ): boolean {
     const expected = createHmac('sha256', secret).update(data).digest('base64')
-    return expected === signature
+
+    // 使用 timingSafeEqual 防止 Timing Attack
+    const expectedBuffer = Buffer.from(expected, 'utf-8')
+    const signatureBuffer = Buffer.from(signature, 'utf-8')
+
+    // 長度不同時也要執行 timingSafeEqual 以維持恆定時間
+    if (expectedBuffer.length !== signatureBuffer.length) {
+      // 建立相同長度的 buffer 進行比較，避免洩漏長度資訊
+      const dummyBuffer = Buffer.alloc(expectedBuffer.length)
+      timingSafeEqual(expectedBuffer, dummyBuffer)
+      return false
+    }
+
+    return timingSafeEqual(expectedBuffer, signatureBuffer)
+  }
+
+  /**
+   * 驗證 Transaction ID 格式
+   * LINE Pay transactionId 必須是 19 位數字
+   * @param transactionId 要驗證的 Transaction ID
+   * @throws {Error} 當格式不正確時拋出錯誤
+   */
+  static validateTransactionId(transactionId: string): void {
+    if (!TRANSACTION_ID_REGEX.test(transactionId)) {
+      throw new Error(
+        `Invalid transactionId format: expected 19-digit number, got "${transactionId}"`
+      )
+    }
+  }
+
+  /**
+   * 檢查 Transaction ID 格式是否有效
+   * @param transactionId 要檢查的 Transaction ID
+   * @returns 是否為有效格式
+   */
+  static isValidTransactionId(transactionId: string): boolean {
+    return TRANSACTION_ID_REGEX.test(transactionId)
   }
 
   /**
