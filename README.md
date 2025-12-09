@@ -224,6 +224,27 @@ Check the status of a specific transaction.
 const status = await client.checkStatus(transactionId)
 ```
 
+### 5. Utilities
+
+The SDK provides a `LinePayUtils` class for common tasks.
+
+#### Parse Callback Parameters
+Extract `transactionId` and `orderId` from the Confirm URL query.
+
+```typescript
+import { LinePayUtils } from '@carllee1983/line-pay-v4'
+
+// In your callback handler (e.g. Express)
+const { transactionId, orderId } = LinePayUtils.parseConfirmQuery(req.query)
+```
+
+#### Verify HMAC Signature
+If you need to verify signatures (e.g. for custom webhooks).
+
+```typescript
+const isValid = LinePayUtils.verifySignature(channelSecret, body, signature)
+```
+
 ## 🏗️ Project Structure
 
 ```

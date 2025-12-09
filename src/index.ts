@@ -15,6 +15,7 @@ export const VERSION = pkg.version
  */
 export { LinePayClient } from './LinePayClient'
 export { RequestPayment } from './payments/RequestPayment'
+export { LinePayUtils } from './LinePayUtils'
 
 /**
  * Configuration

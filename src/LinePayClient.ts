@@ -1,4 +1,5 @@
-import { createHmac, randomUUID } from 'node:crypto'
+import { randomUUID } from 'node:crypto'
+import { LinePayUtils } from './LinePayUtils'
 import { LINE_PAY_API_BASE_URL, DEFAULT_TIMEOUT } from './config/env'
 import type { LinePayConfig } from './config/types'
 import type {
@@ -176,15 +177,16 @@ export class LinePayClient {
     params?: Record<string, string>
   ): Promise<T> {
     const nonce = randomUUID()
-    const url = `${this.baseUrl}${path}${this.buildQueryString(params)}`
+    const queryString = LinePayUtils.buildQueryString(params)
+    const url = `${this.baseUrl}${path}${queryString}`
     const bodyString = body !== undefined ? JSON.stringify(body) : ''
 
-    const signature = this.generateSignature(
+    const signature = LinePayUtils.generateSignature(
       this.channelSecret,
       path,
       bodyString,
       nonce,
-      params
+      queryString
     )
 
     const headers = {
@@ -224,26 +226,5 @@ export class LinePayClient {
       }
       throw error
     }
-  }
-
-  /**
-   * Generate HMAC-SHA256 Signature
-   */
-  private generateSignature(
-    secret: string,
-    uri: string,
-    body: string,
-    nonce: string,
-    params?: Record<string, string>
-  ): string {
-    const queryString = this.buildQueryString(params)
-    const data = `${secret}${uri}${queryString}${body}${nonce}`
-    return createHmac('sha256', secret).update(data).digest('base64')
-  }
-
-  private buildQueryString(params?: Record<string, string>): string {
-    if (!params || Object.keys(params).length === 0) return ''
-    const query = new URLSearchParams(params).toString()
-    return `?${query}`
   }
 }

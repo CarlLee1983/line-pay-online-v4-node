@@ -212,4 +212,43 @@ describe('LinePayClient', () => {
     expect(url).toContain('/v4/payments/requests/12345/check')
     expect(init.method).toBe('GET')
   })
+
+  it('should handle API errors correctly', () => {
+    const client = new LinePayClient(config)
+    const fetchMock = mock(() =>
+      Promise.resolve(
+        new Response('Bad Request', {
+          status: 400,
+          statusText: 'Bad Request',
+        })
+      )
+    )
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    expect(
+      client.requestPayment({
+        amount: 100,
+        currency: Currency.TWD,
+        orderId: '1',
+        packages: [],
+        redirectUrls: { confirmUrl: '', cancelUrl: '' },
+      })
+    ).rejects.toThrow('LINE Pay API Error: 400 Bad Request - Bad Request')
+  })
+
+  it('should handle network errors correctly', () => {
+    const client = new LinePayClient(config)
+    const fetchMock = mock(() => Promise.reject(new Error('Network Error')))
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    expect(
+      client.requestPayment({
+        amount: 100,
+        currency: Currency.TWD,
+        orderId: '1',
+        packages: [],
+        redirectUrls: { confirmUrl: '', cancelUrl: '' },
+      })
+    ).rejects.toThrow('Network Error')
+  })
 })

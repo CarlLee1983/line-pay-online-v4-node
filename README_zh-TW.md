@@ -226,6 +226,27 @@ const details = await client.getDetails({
 const status = await client.checkStatus(transactionId)
 ```
 
+### 5. 工具函式 (Utilities)
+
+本 SDK 提供 `LinePayUtils` 類別來協助處理常見任務。
+
+#### 解析 Callback 參數
+從 Confirm URL 的 query 參數中提取 `transactionId` 與 `orderId`。
+
+```typescript
+import { LinePayUtils } from '@carllee1983/line-pay-v4'
+
+// 在您的 callback 處理器中 (例如 Express)
+const { transactionId, orderId } = LinePayUtils.parseConfirmQuery(req.query)
+```
+
+#### 驗證 HMAC 簽章
+若您需要驗證簽章（例如用於自訂 Webhook）。
+
+```typescript
+const isValid = LinePayUtils.verifySignature(channelSecret, body, signature)
+```
+
 ## 🏗️ 專案結構
 
 ```
