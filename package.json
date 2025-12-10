@@ -1,6 +1,6 @@
 {
   "name": "line-pay-online-v4",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Official LINE Pay Online V4 API SDK for Node.js/Bun - Type-safe, zero dependencies, 100% test coverage",
   "type": "module",
   "main": "./dist/index.cjs",

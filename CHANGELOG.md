@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/CarlLee1983/line-pay-online-v4-node/compare/v1.2.0...v1.3.0) (2025-12-10)
+
+
+### Features
+
+* rename package to line-pay-online-v4 and migrate infrastructure ([99b014b](https://github.com/CarlLee1983/line-pay-online-v4-node/commit/99b014bab809be6f435fa57dede72ced1243d059))
+
 ## [1.2.0](https://github.com/CarlLee1983/line-pay-online-v4-node/compare/v1.1.0...v1.2.0) (2025-12-09)
 
 
