@@ -1,8 +1,8 @@
 import { describe, expect, it, mock } from 'bun:test'
-import { LinePayClient } from '../src/LinePayClient'
+import { LinePayConfigError, LinePayError, LinePayTimeoutError } from '../src'
 import { Currency } from '../src/enums/Currency'
+import { LinePayClient } from '../src/LinePayClient'
 import type { PaymentRequestBody } from '../src/payments/PaymentRequest'
-import { LinePayError, LinePayTimeoutError, LinePayConfigError } from '../src'
 
 describe('LinePayClient', () => {
   const config = {
@@ -45,9 +45,7 @@ describe('LinePayClient', () => {
     }
 
     // Mock global fetch
-    const fetchMock = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockResponse)))
-    )
+    const fetchMock = mock(() => Promise.resolve(new Response(JSON.stringify(mockResponse))))
     global.fetch = fetchMock as unknown as typeof fetch
 
     const requestBody: PaymentRequestBody = {
@@ -104,9 +102,7 @@ describe('LinePayClient', () => {
       returnMessage: 'OK',
       info: { transactionId: VALID_TRANSACTION_ID },
     }
-    const fetchMock = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockResponse)))
-    )
+    const fetchMock = mock(() => Promise.resolve(new Response(JSON.stringify(mockResponse))))
     global.fetch = fetchMock as unknown as typeof fetch
 
     await client.confirm(VALID_TRANSACTION_ID, {
@@ -114,10 +110,7 @@ describe('LinePayClient', () => {
       currency: Currency.TWD,
     })
 
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [
-      string,
-      RequestInit,
-    ]
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toContain(`/v4/payments/${VALID_TRANSACTION_ID}/confirm`)
     expect(init.method).toBe('POST')
     expect(init.body).toContain('"amount":100')
@@ -130,9 +123,7 @@ describe('LinePayClient', () => {
       returnMessage: 'OK',
       info: { transactionId: VALID_TRANSACTION_ID },
     }
-    const fetchMock = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockResponse)))
-    )
+    const fetchMock = mock(() => Promise.resolve(new Response(JSON.stringify(mockResponse))))
     global.fetch = fetchMock as unknown as typeof fetch
 
     await client.capture(VALID_TRANSACTION_ID, {
@@ -140,50 +131,33 @@ describe('LinePayClient', () => {
       currency: Currency.TWD,
     })
 
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [
-      string,
-      RequestInit,
-    ]
-    expect(url).toContain(
-      `/v4/payments/authorizations/${VALID_TRANSACTION_ID}/capture`
-    )
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
+    expect(url).toContain(`/v4/payments/authorizations/${VALID_TRANSACTION_ID}/capture`)
     expect(init.method).toBe('POST')
   })
 
   it('should call void correctly', async () => {
     const client = new LinePayClient(config)
     const mockResponse = { returnCode: '0000', returnMessage: 'OK', info: {} }
-    const fetchMock = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockResponse)))
-    )
+    const fetchMock = mock(() => Promise.resolve(new Response(JSON.stringify(mockResponse))))
     global.fetch = fetchMock as unknown as typeof fetch
 
     await client.void(VALID_TRANSACTION_ID)
 
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [
-      string,
-      RequestInit,
-    ]
-    expect(url).toContain(
-      `/v4/payments/authorizations/${VALID_TRANSACTION_ID}/void`
-    )
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
+    expect(url).toContain(`/v4/payments/authorizations/${VALID_TRANSACTION_ID}/void`)
     expect(init.method).toBe('POST')
   })
 
   it('should call refund correctly', async () => {
     const client = new LinePayClient(config)
     const mockResponse = { returnCode: '0000', returnMessage: 'OK', info: {} }
-    const fetchMock = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockResponse)))
-    )
+    const fetchMock = mock(() => Promise.resolve(new Response(JSON.stringify(mockResponse))))
     global.fetch = fetchMock as unknown as typeof fetch
 
     await client.refund(VALID_TRANSACTION_ID, { refundAmount: 50 })
 
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [
-      string,
-      RequestInit,
-    ]
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toContain(`/v4/payments/${VALID_TRANSACTION_ID}/refund`)
     expect(init.method).toBe('POST')
     expect(init.body).toBe(JSON.stringify({ refundAmount: 50 }))
@@ -192,17 +166,12 @@ describe('LinePayClient', () => {
   it('should call getDetails correctly with params', async () => {
     const client = new LinePayClient(config)
     const mockResponse = { returnCode: '0000', returnMessage: 'OK', info: [] }
-    const fetchMock = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockResponse)))
-    )
+    const fetchMock = mock(() => Promise.resolve(new Response(JSON.stringify(mockResponse))))
     global.fetch = fetchMock as unknown as typeof fetch
 
     await client.getDetails({ transactionId: ['123', '456'], fields: 'amount' })
 
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [
-      string,
-      RequestInit,
-    ]
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toContain('/v4/payments/requests')
     expect(url).toContain('transactionId=123%2C456')
     expect(url).toContain('transactionId=123%2C456')
@@ -213,18 +182,13 @@ describe('LinePayClient', () => {
   it('should call getDetails with orderId correctly', async () => {
     const client = new LinePayClient(config)
     const fetchMock = mock(() =>
-      Promise.resolve(
-        new Response(JSON.stringify({ returnCode: '0000', info: [] }))
-      )
+      Promise.resolve(new Response(JSON.stringify({ returnCode: '0000', info: [] })))
     )
     global.fetch = fetchMock as unknown as typeof fetch
 
     await client.getDetails({ orderId: ['ORDER_1', 'ORDER_2'] })
 
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [
-      string,
-      RequestInit,
-    ]
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toContain('/v4/payments/requests')
     expect(init.method).toBe('GET')
     expect(url).toContain('orderId=ORDER_1%2CORDER_2')
@@ -233,17 +197,12 @@ describe('LinePayClient', () => {
   it('should call checkStatus correctly', async () => {
     const client = new LinePayClient(config)
     const mockResponse = { returnCode: '0000', returnMessage: 'OK', info: {} }
-    const fetchMock = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(mockResponse)))
-    )
+    const fetchMock = mock(() => Promise.resolve(new Response(JSON.stringify(mockResponse))))
     global.fetch = fetchMock as unknown as typeof fetch
 
     await client.checkStatus(VALID_TRANSACTION_ID)
 
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [
-      string,
-      RequestInit,
-    ]
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toContain(`/v4/payments/requests/${VALID_TRANSACTION_ID}/check`)
     expect(init.method).toBe('GET')
   })
@@ -316,9 +275,7 @@ describe('LinePayClient', () => {
       returnCode: '1150',
       returnMessage: 'Transaction not found',
     }
-    const fetchMock = mock(() =>
-      Promise.resolve(new Response(JSON.stringify(errorResponse)))
-    )
+    const fetchMock = mock(() => Promise.resolve(new Response(JSON.stringify(errorResponse))))
     global.fetch = fetchMock as unknown as typeof fetch
 
     try {
@@ -417,22 +374,20 @@ describe('LinePayClient', () => {
     const client = new LinePayClient(config)
 
     // 無效的 transactionId 應該拋出錯誤（同步驗證）
-    expect(() =>
-      client.confirm('12345', { amount: 100, currency: Currency.TWD })
-    ).toThrow('Invalid transactionId format')
-
-    expect(() => client.checkStatus('invalid')).toThrow(
+    expect(() => client.confirm('12345', { amount: 100, currency: Currency.TWD })).toThrow(
       'Invalid transactionId format'
     )
+
+    expect(() => client.checkStatus('invalid')).toThrow('Invalid transactionId format')
   })
 
   it('should throw LinePayConfigError for invalid config', () => {
-    expect(
-      () => new LinePayClient({ channelId: '', channelSecret: 'test' })
-    ).toThrow(LinePayConfigError)
-    expect(
-      () => new LinePayClient({ channelId: 'test', channelSecret: '' })
-    ).toThrow(LinePayConfigError)
+    expect(() => new LinePayClient({ channelId: '', channelSecret: 'test' })).toThrow(
+      LinePayConfigError
+    )
+    expect(() => new LinePayClient({ channelId: 'test', channelSecret: '' })).toThrow(
+      LinePayConfigError
+    )
     expect(
       () =>
         new LinePayClient({

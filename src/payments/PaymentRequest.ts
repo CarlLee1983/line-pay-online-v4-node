@@ -1,6 +1,6 @@
+import type { PaymentPackage } from '../domain/PaymentPackage'
 import type { Currency } from '../enums/Currency'
 import type { PayType } from '../enums/PayType'
-import type { PaymentPackage } from '../domain/PaymentPackage'
 
 /**
  * Redirect URLs configuration

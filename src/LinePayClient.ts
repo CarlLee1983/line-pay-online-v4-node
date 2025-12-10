@@ -1,20 +1,20 @@
 import { LinePayBaseClient, LinePayUtils } from 'line-pay-core-v4'
 import type {
-  PaymentRequestBody,
-  ConfirmPaymentRequest,
   CapturePaymentRequest,
-  VoidPaymentRequest,
-  RefundPaymentRequest,
+  ConfirmPaymentRequest,
   PaymentDetailsParams,
+  PaymentRequestBody,
+  RefundPaymentRequest,
+  VoidPaymentRequest,
 } from './payments/PaymentRequest'
 import type {
-  RequestPaymentResponse,
-  ConfirmPaymentResponse,
   CapturePaymentResponse,
-  VoidPaymentResponse,
-  RefundPaymentResponse,
-  PaymentDetailsResponse,
   CheckPaymentStatusResponse,
+  ConfirmPaymentResponse,
+  PaymentDetailsResponse,
+  RefundPaymentResponse,
+  RequestPaymentResponse,
+  VoidPaymentResponse,
 } from './payments/PaymentResponse'
 import { RequestPayment } from './payments/RequestPayment'
 
@@ -46,14 +46,8 @@ export class LinePayClient extends LinePayBaseClient {
    * Request Payment (POST /v4/payments/request)
    * @param body Payment Request Body
    */
-  async requestPayment(
-    body: PaymentRequestBody
-  ): Promise<RequestPaymentResponse> {
-    return this.sendRequest<RequestPaymentResponse>(
-      'POST',
-      '/v4/payments/request',
-      body
-    )
+  async requestPayment(body: PaymentRequestBody): Promise<RequestPaymentResponse> {
+    return this.sendRequest<RequestPaymentResponse>('POST', '/v4/payments/request', body)
   }
 
   /**
@@ -95,10 +89,7 @@ export class LinePayClient extends LinePayBaseClient {
    * @param transactionId 交易 ID（19 位數字）
    * @param body 取消授權請求內容（可選）
    */
-  async void(
-    transactionId: string,
-    body?: VoidPaymentRequest
-  ): Promise<VoidPaymentResponse> {
+  async void(transactionId: string, body?: VoidPaymentRequest): Promise<VoidPaymentResponse> {
     LinePayUtils.validateTransactionId(transactionId)
     return this.sendRequest<VoidPaymentResponse>(
       'POST',
@@ -112,10 +103,7 @@ export class LinePayClient extends LinePayBaseClient {
    * @param transactionId 交易 ID（19 位數字）
    * @param body 退款請求內容（可選，不指定則全額退款）
    */
-  async refund(
-    transactionId: string,
-    body?: RefundPaymentRequest
-  ): Promise<RefundPaymentResponse> {
+  async refund(transactionId: string, body?: RefundPaymentRequest): Promise<RefundPaymentResponse> {
     LinePayUtils.validateTransactionId(transactionId)
     return this.sendRequest<RefundPaymentResponse>(
       'POST',
@@ -127,9 +115,7 @@ export class LinePayClient extends LinePayBaseClient {
   /**
    * Get Payment Details (GET /v4/payments/requests)
    */
-  async getDetails(
-    params: PaymentDetailsParams
-  ): Promise<PaymentDetailsResponse> {
+  async getDetails(params: PaymentDetailsParams): Promise<PaymentDetailsResponse> {
     const queryParams: Record<string, string> = {}
     if (params.fields !== undefined && params.fields !== '') {
       queryParams.fields = params.fields
@@ -153,9 +139,7 @@ export class LinePayClient extends LinePayBaseClient {
    * Check Payment Status (GET /v4/payments/requests/{transactionId}/check)
    * @param transactionId 交易 ID（19 位數字）
    */
-  async checkStatus(
-    transactionId: string
-  ): Promise<CheckPaymentStatusResponse> {
+  async checkStatus(transactionId: string): Promise<CheckPaymentStatusResponse> {
     LinePayUtils.validateTransactionId(transactionId)
     return this.sendRequest<CheckPaymentStatusResponse>(
       'GET',

@@ -1,10 +1,10 @@
 import { describe, expect, it, mock } from 'bun:test'
-import { LinePayClient } from '../src/LinePayClient'
-import { RequestPayment } from '../src/payments/RequestPayment'
-import { Currency } from '../src/enums/Currency'
 import type { PaymentPackage } from '../src/domain/PaymentPackage'
-import type { RequestPaymentResponse } from '../src/payments/PaymentResponse'
+import { Currency } from '../src/enums/Currency'
+import { LinePayClient } from '../src/LinePayClient'
 import type { PaymentRequestBody } from '../src/payments/PaymentRequest'
+import type { RequestPaymentResponse } from '../src/payments/PaymentResponse'
+import { RequestPayment } from '../src/payments/RequestPayment'
 
 describe('RequestPayment Operation', () => {
   const config = {
@@ -42,9 +42,7 @@ describe('RequestPayment Operation', () => {
       .send()
 
     expect(mockRequestPayment).toHaveBeenCalledTimes(1)
-    const callArg = (
-      mockRequestPayment.mock.calls[0] as unknown as [PaymentRequestBody]
-    )[0]
+    const callArg = (mockRequestPayment.mock.calls[0] as unknown as [PaymentRequestBody])[0]
     expect(callArg).toEqual({
       amount: 100,
       currency: Currency.TWD,
@@ -116,8 +114,6 @@ describe('RequestPayment Operation', () => {
 
     expect(() => {
       request.validate()
-    }).toThrow(
-      'Sum of product amounts (90) in package index 0 does not match package amount (100)'
-    )
+    }).toThrow('Sum of product amounts (90) in package index 0 does not match package amount (100)')
   })
 })

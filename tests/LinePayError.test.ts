@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'bun:test'
 import {
+  LinePayConfigError,
   LinePayError,
   LinePayTimeoutError,
-  LinePayConfigError,
   LinePayValidationError,
 } from '../src'
 
@@ -103,10 +103,7 @@ describe('LinePayTimeoutError', () => {
   })
 
   it('should create error with URL', () => {
-    const error = new LinePayTimeoutError(
-      3000,
-      'https://api-pay.line.me/v4/payments'
-    )
+    const error = new LinePayTimeoutError(3000, 'https://api-pay.line.me/v4/payments')
 
     expect(error.timeout).toBe(3000)
     expect(error.url).toBe('https://api-pay.line.me/v4/payments')

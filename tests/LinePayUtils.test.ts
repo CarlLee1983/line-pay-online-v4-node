@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
-import { LinePayUtils } from '../src'
 import { createHmac } from 'node:crypto'
+import { LinePayUtils } from '../src'
 
 describe('LinePayUtils', () => {
   it('should be instantiable (private constructor coverage)', () => {
@@ -20,13 +20,7 @@ describe('LinePayUtils', () => {
         .update(`${secret}${uri}${queryString}${body}${nonce}`)
         .digest('base64')
 
-      const signature = LinePayUtils.generateSignature(
-        secret,
-        uri,
-        body,
-        nonce,
-        queryString
-      )
+      const signature = LinePayUtils.generateSignature(secret, uri, body, nonce, queryString)
 
       expect(signature).toBe(expected)
     })
@@ -36,9 +30,7 @@ describe('LinePayUtils', () => {
     it('should return true for valid signature', () => {
       const secret = 'secret'
       const data = 'some-data-to-sign'
-      const signature = createHmac('sha256', secret)
-        .update(data)
-        .digest('base64')
+      const signature = createHmac('sha256', secret).update(data).digest('base64')
 
       expect(LinePayUtils.verifySignature(secret, data, signature)).toBe(true)
     })
@@ -59,12 +51,8 @@ describe('LinePayUtils', () => {
       const longSignature =
         'very-long-signature-that-is-definitely-not-the-correct-length-for-base64-hmac'
 
-      expect(LinePayUtils.verifySignature(secret, data, shortSignature)).toBe(
-        false
-      )
-      expect(LinePayUtils.verifySignature(secret, data, longSignature)).toBe(
-        false
-      )
+      expect(LinePayUtils.verifySignature(secret, data, shortSignature)).toBe(false)
+      expect(LinePayUtils.verifySignature(secret, data, longSignature)).toBe(false)
     })
   })
 
@@ -102,16 +90,12 @@ describe('LinePayUtils', () => {
 
   describe('isValidTransactionId', () => {
     it('should return true for valid 19-digit transactionId', () => {
-      expect(LinePayUtils.isValidTransactionId('1234567890123456789')).toBe(
-        true
-      )
+      expect(LinePayUtils.isValidTransactionId('1234567890123456789')).toBe(true)
     })
 
     it('should return false for invalid transactionId', () => {
       expect(LinePayUtils.isValidTransactionId('123')).toBe(false)
-      expect(LinePayUtils.isValidTransactionId('12345678901234567890')).toBe(
-        false
-      )
+      expect(LinePayUtils.isValidTransactionId('12345678901234567890')).toBe(false)
       expect(LinePayUtils.isValidTransactionId('abc')).toBe(false)
       expect(LinePayUtils.isValidTransactionId('')).toBe(false)
     })
@@ -128,9 +112,7 @@ describe('LinePayUtils', () => {
         key1: 'value1',
         key2: 'value2',
       }
-      expect(LinePayUtils.buildQueryString(params)).toBe(
-        '?key1=value1&key2=value2'
-      )
+      expect(LinePayUtils.buildQueryString(params)).toBe('?key1=value1&key2=value2')
     })
   })
 
@@ -159,9 +141,7 @@ describe('LinePayUtils', () => {
       const query = {
         orderId: 'ORDER_001',
       }
-      expect(() => LinePayUtils.parseConfirmQuery(query)).toThrow(
-        'Missing transactionId'
-      )
+      expect(() => LinePayUtils.parseConfirmQuery(query)).toThrow('Missing transactionId')
     })
 
     it('should work without optional orderId', () => {

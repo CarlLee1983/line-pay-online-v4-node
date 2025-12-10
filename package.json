@@ -29,12 +29,14 @@
     "test": "bun test",
     "test:coverage": "bun test --coverage",
     "test:ci": "bun test --coverage --coverage-threshold=100",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "biome lint ./src ./tests",
+    "lint:fix": "biome lint --write ./src ./tests",
+    "format": "biome format --write ./src ./tests",
+    "format:check": "biome format ./src ./tests",
+    "check": "biome check ./src ./tests",
+    "check:fix": "biome check --write ./src ./tests",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "bun run typecheck && bun run lint && bun run test:ci && bun run build",
+    "prepublishOnly": "bun run typecheck && bun run check && bun run test:ci && bun run build",
     "prepare": "simple-git-hooks"
   },
   "keywords": [
@@ -69,28 +71,24 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.16.0",
+    "@biomejs/biome": "^2.3.8",
     "@types/bun": "latest",
-    "eslint": "^9.16.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "globals": "^15.13.0",
-    "prettier": "^3.4.2",
-    "typescript": "^5.7.2",
-    "typescript-eslint": "^8.18.0",
+    "lint-staged": "^15.2.10",
     "simple-git-hooks": "^2.11.1",
-    "lint-staged": "^15.2.10"
+    "typescript": "^5.7.2"
   },
   "simple-git-hooks": {
     "pre-commit": "bun run test && bunx lint-staged"
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs}": [
-      "eslint --fix",
-      "prettier --write"
+      "biome check --write"
     ],
-    "*.{json,md,yml,yaml}": [
-      "prettier --write"
+    "*.{ts,tsx}": [
+      "bash -c 'bun run typecheck'"
+    ],
+    "*.test.{ts,tsx}": [
+      "bun test --bail"
     ]
   },
   "dependencies": {

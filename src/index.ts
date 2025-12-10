@@ -11,60 +11,57 @@ import pkg from '../package.json'
 export const VERSION = pkg.version
 
 /**
- * Core
- */
-export { LinePayClient } from './LinePayClient'
-export { RequestPayment } from './payments/RequestPayment'
-
-/**
  * Re-exports from line-pay-core-v4
  */
 export {
-  LinePayUtils,
+  type LinePayConfig,
+  LinePayConfigError,
   LinePayError,
   LinePayTimeoutError,
-  LinePayConfigError,
+  LinePayUtils,
   LinePayValidationError,
-  type LinePayConfig,
 } from 'line-pay-core-v4'
-
-/**
- * Enums
- */
-export { Currency, type CurrencyCode } from './enums/Currency'
-export { PayType } from './enums/PayType'
-export { ConfirmUrlType } from './enums/ConfirmUrlType'
-
 /**
  * Domain & Request Types
  */
 export type { PaymentPackage } from './domain/PaymentPackage'
 export type { PaymentProduct } from './domain/PaymentProduct'
+export { ConfirmUrlType } from './enums/ConfirmUrlType'
+/**
+ * Enums
+ */
+export { Currency, type CurrencyCode } from './enums/Currency'
+export { PayType } from './enums/PayType'
+/**
+ * Core
+ */
+export { LinePayClient } from './LinePayClient'
 export type {
-  PaymentRequestBody,
-  ConfirmPaymentRequest,
   CapturePaymentRequest,
-  VoidPaymentRequest,
-  RefundPaymentRequest,
+  ConfirmPaymentRequest,
   PaymentDetailsParams,
-  RedirectUrls,
   PaymentOptions,
+  PaymentRequestBody,
+  RedirectUrls,
+  RefundPaymentRequest,
+  VoidPaymentRequest,
 } from './payments/PaymentRequest'
 export type {
-  RequestPaymentResponse,
-  ConfirmPaymentResponse,
   CapturePaymentResponse,
-  VoidPaymentResponse,
-  RefundPaymentResponse,
-  PaymentDetailsResponse,
   CheckPaymentStatusResponse,
-  LinePayBaseResponse,
-  RequestPaymentInfo,
-  PaymentConfirmationInfo,
-  PayInfo,
-  RefundInfo,
-  PaymentDetailsInfo,
   CheckStatusInfo,
-  ProductInfo,
+  ConfirmPaymentResponse,
+  LinePayBaseResponse,
   PackageInfo,
+  PayInfo,
+  PaymentConfirmationInfo,
+  PaymentDetailsInfo,
+  PaymentDetailsResponse,
+  ProductInfo,
+  RefundInfo,
+  RefundPaymentResponse,
+  RequestPaymentInfo,
+  RequestPaymentResponse,
+  VoidPaymentResponse,
 } from './payments/PaymentResponse'
+export { RequestPayment } from './payments/RequestPayment'

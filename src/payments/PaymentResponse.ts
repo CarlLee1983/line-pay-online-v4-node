@@ -215,10 +215,8 @@ export interface CheckStatusInfo {
  * Response Types
  */
 export type RequestPaymentResponse = LinePayBaseResponse<RequestPaymentInfo>
-export type ConfirmPaymentResponse =
-  LinePayBaseResponse<PaymentConfirmationInfo>
-export type CapturePaymentResponse =
-  LinePayBaseResponse<PaymentConfirmationInfo>
+export type ConfirmPaymentResponse = LinePayBaseResponse<PaymentConfirmationInfo>
+export type CapturePaymentResponse = LinePayBaseResponse<PaymentConfirmationInfo>
 export type VoidPaymentResponse = LinePayBaseResponse<void> // Info is null or empty
 export type RefundPaymentResponse = LinePayBaseResponse<RefundInfo>
 export type PaymentDetailsResponse = LinePayBaseResponse<PaymentDetailsInfo[]>

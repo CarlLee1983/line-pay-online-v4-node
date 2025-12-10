@@ -1,13 +1,9 @@
-import type { LinePayClient } from '../LinePayClient'
-import type { Currency } from '../enums/Currency'
-import type { PaymentPackage } from '../domain/PaymentPackage'
-import type {
-  PaymentOptions,
-  PaymentRequestBody,
-  RedirectUrls,
-} from './PaymentRequest'
-import type { RequestPaymentResponse } from './PaymentResponse'
 import { LinePayValidationError } from 'line-pay-core-v4'
+import type { PaymentPackage } from '../domain/PaymentPackage'
+import type { Currency } from '../enums/Currency'
+import type { LinePayClient } from '../LinePayClient'
+import type { PaymentOptions, PaymentRequestBody, RedirectUrls } from './PaymentRequest'
+import type { RequestPaymentResponse } from './PaymentResponse'
 
 /**
  * 金額比較容差值
@@ -125,10 +121,7 @@ export class RequestPayment {
    */
   validate(): void {
     if (this.amount === undefined || this.amount < 0) {
-      throw new LinePayValidationError(
-        'Amount is required and must be non-negative',
-        'amount'
-      )
+      throw new LinePayValidationError('Amount is required and must be non-negative', 'amount')
     }
     if (this.currency === undefined) {
       throw new LinePayValidationError('Currency is required', 'currency')
@@ -137,23 +130,14 @@ export class RequestPayment {
       throw new LinePayValidationError('OrderId is required', 'orderId')
     }
     if (this.packages.length === 0) {
-      throw new LinePayValidationError(
-        'At least one package is required',
-        'packages'
-      )
+      throw new LinePayValidationError('At least one package is required', 'packages')
     }
     if (this.redirectUrls === undefined) {
-      throw new LinePayValidationError(
-        'Redirect URLs are required',
-        'redirectUrls'
-      )
+      throw new LinePayValidationError('Redirect URLs are required', 'redirectUrls')
     }
 
     // Validate Package Amounts Sum
-    const packagesTotal = this.packages.reduce(
-      (sum, pkg) => sum + pkg.amount,
-      0
-    )
+    const packagesTotal = this.packages.reduce((sum, pkg) => sum + pkg.amount, 0)
     if (Math.abs(packagesTotal - this.amount) > AMOUNT_TOLERANCE) {
       throw new LinePayValidationError(
         `Sum of package amounts (${String(packagesTotal)}) does not match total amount (${String(this.amount)})`,
@@ -163,10 +147,7 @@ export class RequestPayment {
 
     // Validate Products Sum within each Package
     this.packages.forEach((pkg, index) => {
-      const productsTotal = pkg.products.reduce(
-        (sum, prod) => sum + prod.quantity * prod.price,
-        0
-      )
+      const productsTotal = pkg.products.reduce((sum, prod) => sum + prod.quantity * prod.price, 0)
       if (Math.abs(productsTotal - pkg.amount) > AMOUNT_TOLERANCE) {
         throw new LinePayValidationError(
           `Sum of product amounts (${String(productsTotal)}) in package index ${String(index)} does not match package amount (${String(pkg.amount)})`,
