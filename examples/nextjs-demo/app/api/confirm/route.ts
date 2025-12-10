@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { Currency, LinePayUtils } from 'line-pay-online-v4'
+import { type NextRequest, NextResponse } from 'next/server'
 import { linePayClient } from '@/lib/linepay'
-import { LinePayUtils, Currency } from '@carllee1983/line-pay-online-v4'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -8,10 +8,7 @@ export async function GET(req: NextRequest) {
   const orderId = searchParams.get('orderId')
 
   if (!transactionId || !orderId) {
-    return NextResponse.json(
-      { error: 'Missing transactionId or orderId' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Missing transactionId or orderId' }, { status: 400 })
   }
 
   try {

@@ -1,6 +1,6 @@
+import { Currency } from 'line-pay-online-v4'
 import { NextResponse } from 'next/server'
 import { linePayClient } from '@/lib/linepay'
-import { Currency } from '@carllee1983/line-pay-online-v4'
 
 export async function POST() {
   const orderId = `ORDER_${Date.now()}`

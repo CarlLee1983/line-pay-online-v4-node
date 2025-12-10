@@ -1,5 +1,5 @@
 {
-  "name": "@carllee1983/line-pay-online-v4",
+  "name": "line-pay-online-v4",
   "version": "1.2.0",
   "description": "Official LINE Pay Online V4 API SDK for Node.js/Bun - Type-safe, zero dependencies, 100% test coverage",
   "type": "module",
@@ -82,9 +82,7 @@
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs}": [
-      "biome check --write"
-    ],
-    "*.{ts,tsx}": [
+      "biome check --write",
       "bash -c 'bun run typecheck'"
     ],
     "*.test.{ts,tsx}": [

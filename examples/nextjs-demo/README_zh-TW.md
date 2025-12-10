@@ -1,6 +1,6 @@
 # Next.js LINE Pay 範例專案
 
-這是一個整合了 `@carllee1983/line-pay-online-v4` SDK 的 Next.js App Router 範例應用程式。
+這是一個整合了 `line-pay-online-v4` SDK 的 Next.js App Router 範例應用程式。
 
 [English via README.md](./README.md)
 

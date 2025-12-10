@@ -10,6 +10,7 @@
         "includes": [
             "src/**/*.ts",
             "tests/**/*.ts",
+            "examples/**/*.ts",
             "build.ts",
             "!dist",
             "!node_modules"

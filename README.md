@@ -60,7 +60,7 @@ The builder automatically validates:
 - Each package amount matches sum of product amounts
 
 ```typescript
-import { Currency } from '@carllee1983/line-pay-online-v4'
+import { Currency } from 'line-pay-online-v4'
 
 try {
     // Use client.payment() factory method (recommended)

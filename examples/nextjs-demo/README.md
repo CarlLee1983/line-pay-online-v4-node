@@ -1,6 +1,6 @@
 # Next.js LINE Pay Demo
 
-This is a Next.js App Router example integrating the `@carllee1983/line-pay-online-v4` SDK.
+This is a Next.js App Router example integrating the `line-pay-online-v4` SDK.
 
 [繁體中文 via README_zh-TW.md](./README_zh-TW.md)
 

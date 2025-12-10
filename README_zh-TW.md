@@ -60,7 +60,7 @@ const client = new LinePayClient({
 - 各 package 金額是否等於其 products 金額加總
 
 ```typescript
-import { Currency } from '@carllee1983/line-pay-online-v4'
+import { Currency } from 'line-pay-online-v4'
 
 try {
     // 使用 client.payment() 工廠方法（推薦）
