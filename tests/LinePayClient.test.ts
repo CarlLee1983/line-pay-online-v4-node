@@ -2,11 +2,7 @@ import { describe, expect, it, mock } from 'bun:test'
 import { LinePayClient } from '../src/LinePayClient'
 import { Currency } from '../src/enums/Currency'
 import type { PaymentRequestBody } from '../src/payments/PaymentRequest'
-import {
-  LinePayError,
-  LinePayTimeoutError,
-  LinePayConfigError,
-} from '../src/errors/LinePayError'
+import { LinePayError, LinePayTimeoutError, LinePayConfigError } from '../src'
 
 describe('LinePayClient', () => {
   const config = {

@@ -4,7 +4,7 @@ import {
   LinePayTimeoutError,
   LinePayConfigError,
   LinePayValidationError,
-} from '../src/errors/LinePayError'
+} from '../src'
 
 describe('LinePayError', () => {
   it('should create error with correct message', () => {

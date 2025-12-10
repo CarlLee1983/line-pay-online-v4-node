@@ -15,22 +15,18 @@ export const VERSION = pkg.version
  */
 export { LinePayClient } from './LinePayClient'
 export { RequestPayment } from './payments/RequestPayment'
-export { LinePayUtils } from './LinePayUtils'
 
 /**
- * Errors
+ * Re-exports from line-pay-core-v4
  */
 export {
+  LinePayUtils,
   LinePayError,
   LinePayTimeoutError,
   LinePayConfigError,
   LinePayValidationError,
-} from './errors/LinePayError'
-
-/**
- * Configuration
- */
-export type { LinePayConfig } from './config/types'
+  type LinePayConfig,
+} from 'line-pay-core-v4'
 
 /**
  * Enums

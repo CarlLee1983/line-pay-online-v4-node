@@ -29,7 +29,8 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     // Bun Types
-    "types": ["bun-types"]
+    "types": ["bun-types"],
+    "baseUrl": "."
   },
   "include": ["src/**/*", "tests/**/*", "build.ts"],
   "exclude": ["node_modules", "dist"]

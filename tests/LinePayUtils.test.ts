@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { LinePayUtils } from '../src/LinePayUtils'
+import { LinePayUtils } from '../src'
 import { createHmac } from 'node:crypto'
 
 describe('LinePayUtils', () => {

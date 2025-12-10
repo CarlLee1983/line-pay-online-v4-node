@@ -7,7 +7,7 @@ import type {
   RedirectUrls,
 } from './PaymentRequest'
 import type { RequestPaymentResponse } from './PaymentResponse'
-import { LinePayValidationError } from '../errors/LinePayError'
+import { LinePayValidationError } from 'line-pay-core-v4'
 
 /**
  * 金額比較容差值

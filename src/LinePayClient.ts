@@ -1,7 +1,4 @@
-import { randomUUID } from 'node:crypto'
-import { LinePayUtils } from './LinePayUtils'
-import { LINE_PAY_API_BASE_URL, DEFAULT_TIMEOUT } from './config/env'
-import type { LinePayConfig } from './config/types'
+import { LinePayBaseClient, LinePayUtils } from 'line-pay-core-v4'
 import type {
   PaymentRequestBody,
   ConfirmPaymentRequest,
@@ -18,53 +15,14 @@ import type {
   RefundPaymentResponse,
   PaymentDetailsResponse,
   CheckPaymentStatusResponse,
-  LinePayBaseResponse,
 } from './payments/PaymentResponse'
 import { RequestPayment } from './payments/RequestPayment'
-import {
-  LinePayError,
-  LinePayTimeoutError,
-  LinePayConfigError,
-} from './errors/LinePayError'
 
 /**
  * LINE Pay Client
  * Core class for interacting with LINE Pay V4 API.
  */
-export class LinePayClient {
-  private readonly channelId: string
-  private readonly channelSecret: string
-  private readonly baseUrl: string
-  private readonly timeout: number
-
-  constructor(config: LinePayConfig) {
-    // 驗證必要參數
-    const channelId = config.channelId.trim()
-    const channelSecret = config.channelSecret.trim()
-
-    if (channelId === '') {
-      throw new LinePayConfigError('channelId is required and cannot be empty')
-    }
-    if (channelSecret === '') {
-      throw new LinePayConfigError(
-        'channelSecret is required and cannot be empty'
-      )
-    }
-
-    this.channelId = channelId
-    this.channelSecret = channelSecret
-    this.baseUrl =
-      config.env === 'production'
-        ? LINE_PAY_API_BASE_URL.production
-        : LINE_PAY_API_BASE_URL.sandbox
-    this.timeout = config.timeout ?? DEFAULT_TIMEOUT
-
-    // 驗證 timeout 值
-    if (this.timeout <= 0) {
-      throw new LinePayConfigError('timeout must be a positive number')
-    }
-  }
-
+export class LinePayClient extends LinePayBaseClient {
   /**
    * Create a new RequestPayment builder
    * Factory method for fluent payment request construction
@@ -203,108 +161,5 @@ export class LinePayClient {
       'GET',
       `/v4/payments/requests/${encodeURIComponent(transactionId)}/check`
     )
-  }
-
-  /**
-   * Send API Request
-   * @param method HTTP 方法
-   * @param path API 路徑
-   * @param body 請求內容
-   * @param params 查詢參數
-   * @throws {LinePayError} 當 API 回應錯誤時
-   * @throws {LinePayTimeoutError} 當請求超時時
-   */
-  private async sendRequest<T extends LinePayBaseResponse>(
-    method: 'GET' | 'POST',
-    path: string,
-    body?: unknown,
-    params?: Record<string, string>
-  ): Promise<T> {
-    const nonce = randomUUID()
-    const queryString = LinePayUtils.buildQueryString(params)
-    const url = `${this.baseUrl}${path}${queryString}`
-    const bodyString = body !== undefined ? JSON.stringify(body) : ''
-
-    const signature = LinePayUtils.generateSignature(
-      this.channelSecret,
-      path,
-      bodyString,
-      nonce,
-      queryString
-    )
-
-    const headers = {
-      'Content-Type': 'application/json',
-      'X-LINE-ChannelId': this.channelId,
-      'X-LINE-Authorization-Nonce': nonce,
-      'X-LINE-Authorization': signature,
-    }
-
-    try {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => {
-        controller.abort()
-      }, this.timeout)
-
-      const response = await fetch(url, {
-        method,
-        headers,
-        body: method === 'POST' ? bodyString : undefined,
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeoutId)
-
-      const responseText = await response.text()
-
-      // 嘗試解析 JSON 回應
-      let jsonResponse: T
-      try {
-        jsonResponse = JSON.parse(responseText) as T
-      } catch {
-        // 無法解析 JSON，使用原始錯誤訊息
-        throw new LinePayError(
-          'PARSE_ERROR',
-          'Failed to parse response as JSON',
-          response.status,
-          responseText
-        )
-      }
-
-      // HTTP 狀態碼錯誤
-      if (!response.ok) {
-        throw new LinePayError(
-          jsonResponse.returnCode || 'HTTP_ERROR',
-          jsonResponse.returnMessage || response.statusText,
-          response.status,
-          responseText
-        )
-      }
-
-      // LINE Pay API 業務邏輯錯誤（returnCode !== '0000'）
-      if (jsonResponse.returnCode !== '0000') {
-        throw new LinePayError(
-          jsonResponse.returnCode,
-          jsonResponse.returnMessage,
-          response.status,
-          responseText
-        )
-      }
-
-      return jsonResponse
-    } catch (error) {
-      // 處理已知的自訂錯誤
-      if (error instanceof LinePayError) {
-        throw error
-      }
-
-      // 處理超時錯誤
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw new LinePayTimeoutError(this.timeout, url)
-      }
-
-      // 重新拋出其他錯誤
-      throw error
-    }
   }
 }

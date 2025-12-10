@@ -92,5 +92,8 @@
     "*.{json,md,yml,yaml}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "line-pay-core-v4": "^1.2.2"
   }
 }
