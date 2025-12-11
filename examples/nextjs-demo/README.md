@@ -2,7 +2,7 @@
 
 This is a Next.js App Router example integrating the `line-pay-online-v4` SDK.
 
-[繁體中文 via README_zh-TW.md](./README_zh-TW.md)
+English | [繁體中文](./README_zh-TW.md) | [日本語](./README_ja.md) | [ไทย](./README_th.md)
 
 ## Prerequisites
 

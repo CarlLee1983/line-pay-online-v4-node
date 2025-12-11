@@ -2,7 +2,7 @@
 
 這是一個整合了 `line-pay-online-v4` SDK 的 Next.js App Router 範例應用程式。
 
-[English via README.md](./README.md)
+[English](./README.md) | 繁體中文 | [日本語](./README_ja.md) | [ไทย](./README_th.md)
 
 ## 前置需求
 

@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 
-> 🌏 繁體中文 | [English](./README.md)
+> 🌏 [English](./README.md) | 繁體中文 | [日本語](./README_ja.md) | [ไทย](./README_th.md)
 
 LINE Pay V4 API SDK for Node.js - 型別安全、現代化、可用於生產環境。
 
