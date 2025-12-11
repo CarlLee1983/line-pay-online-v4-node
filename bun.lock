@@ -5,7 +5,7 @@
     "": {
       "name": "line-pay-v4-node",
       "dependencies": {
-        "line-pay-core-v4": "^1.2.2",
+        "line-pay-core-v4": "^1.4.2",
       },
       "devDependencies": {
         "@biomejs/biome": "^2.3.8",
@@ -89,7 +89,7 @@
 
     "lilconfig": ["lilconfig@3.1.3", "", {}, "sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw=="],
 
-    "line-pay-core-v4": ["line-pay-core-v4@1.2.2", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-jAy9fbmfUCm55cL/8yN9Vtg5Bs4Zyc4DoThSMlSgnMHuGuWnnG/FpFrCEKNrzEt/73o4Rp8zCd068P9sYKBkdQ=="],
+    "line-pay-core-v4": ["line-pay-core-v4@1.4.2", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-lnmLwskpsx3+JDBoKPMShPr3U1NfjvSW4vfitLuXR2dTZukheCGsjpl1JMbvJNj3oe703Ylxg3GJ0E+vcFxPNw=="],
 
     "lint-staged": ["lint-staged@15.5.2", "", { "dependencies": { "chalk": "^5.4.1", "commander": "^13.1.0", "debug": "^4.4.0", "execa": "^8.0.1", "lilconfig": "^3.1.3", "listr2": "^8.2.5", "micromatch": "^4.0.8", "pidtree": "^0.6.0", "string-argv": "^0.3.2", "yaml": "^2.7.0" }, "bin": { "lint-staged": "bin/lint-staged.js" } }, "sha512-YUSOLq9VeRNAo/CTaVmhGDKG+LBtA8KF1X4K5+ykMSwWST1vDxJRB2kv2COgLb1fvpCo+A/y9A0G0znNVmdx4w=="],
 
