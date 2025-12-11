@@ -5,13 +5,22 @@
     "emitDeclarationOnly": true,
     "declaration": true,
     "declarationMap": true,
-    "rootDir": ".",
-    "outDir": "./dist/types",
+    "rootDir": "./src",
+    "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "line-pay-core-v4": ["../line-pay-core-v4/dist/index.d.ts"]
+      "line-pay-core-v4": [
+        "../line-pay-core-v4/dist/index.d.ts"
+      ]
     }
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "tests", "**/*.test.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests",
+    "**/*.test.ts"
+  ]
 }

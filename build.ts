@@ -11,7 +11,7 @@ const esmResult = await Bun.build({
   target: 'node',
   sourcemap: 'external',
   minify: false,
-  naming: '[dir]/[name].mjs',
+  naming: '[dir]/[name].js',
 })
 
 if (!esmResult.success) {
@@ -22,28 +22,8 @@ if (!esmResult.success) {
   process.exit(1)
 }
 
-console.log('📦 Building CJS bundle...')
-const cjsResult = await Bun.build({
-  entrypoints: ['./src/index.ts'],
-  outdir: './dist',
-  format: 'cjs',
-  target: 'node',
-  sourcemap: 'external',
-  minify: false,
-  naming: '[dir]/[name].cjs',
-})
-
-if (!cjsResult.success) {
-  console.error('❌ CJS build failed:')
-  for (const log of cjsResult.logs) {
-    console.error(log)
-  }
-  process.exit(1)
-}
-
 console.log('📝 Generating type declarations...')
-const tscResult =
-  await $`bunx tsc -p tsconfig.build.json --emitDeclarationOnly`.quiet()
+const tscResult = await $`bunx tsc -p tsconfig.build.json --emitDeclarationOnly`.quiet()
 
 if (tscResult.exitCode !== 0) {
   console.error('❌ Type declaration generation failed:')
@@ -52,6 +32,5 @@ if (tscResult.exitCode !== 0) {
 }
 
 console.log('✅ Build completed successfully!')
-console.log('   - dist/index.mjs (ESM)')
-console.log('   - dist/index.cjs (CJS)')
-console.log('   - dist/types/src/index.d.ts (Types)')
+console.log('   - dist/index.js (ESM)')
+console.log('   - dist/index.d.ts (Types)')

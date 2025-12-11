@@ -119,6 +119,9 @@
         "attributePosition": "auto"
     },
     "javascript": {
+        "globals": [
+            "Bun"
+        ],
         "formatter": {
             "jsxQuoteStyle": "double",
             "quoteProperties": "asNeeded",
