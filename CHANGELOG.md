@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/CarlLee1983/line-pay-online-v4-node/compare/v1.5.0...v1.6.0) (2025-12-11)
+
+
+### Features
+
+* Add dual ESM/CJS module support by updating build scripts, package exports, and CI checks. ([a2e0ca2](https://github.com/CarlLee1983/line-pay-online-v4-node/commit/a2e0ca29dd7c81a3b7cb0f245cd9de6b0e114f2a))
+
 ## [1.5.0](https://github.com/CarlLee1983/line-pay-online-v4-node/compare/v1.4.0...v1.5.0) (2025-12-11)
 
 
