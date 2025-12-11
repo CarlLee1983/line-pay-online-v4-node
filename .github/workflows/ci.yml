@@ -87,7 +87,7 @@ jobs:
         run: |
           test -f dist/index.mjs || (echo "❌ ESM bundle not found" && exit 1)
           test -f dist/index.cjs || (echo "❌ CJS bundle not found" && exit 1)
-          test -f dist/types/src/index.d.ts || (echo "❌ Type declarations not found" && exit 1)
+          test -f dist/index.d.ts || (echo "❌ Type declarations not found" && exit 1)
           echo "✅ All build outputs verified"
 
       - name: Upload build artifacts

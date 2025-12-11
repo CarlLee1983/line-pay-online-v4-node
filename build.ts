@@ -11,12 +11,31 @@ const esmResult = await Bun.build({
   target: 'node',
   sourcemap: 'external',
   minify: false,
-  naming: '[dir]/[name].js',
+  naming: '[dir]/[name].mjs',
 })
 
 if (!esmResult.success) {
   console.error('❌ ESM build failed:')
   for (const log of esmResult.logs) {
+    console.error(log)
+  }
+  process.exit(1)
+}
+
+console.log('📦 Building CJS bundle...')
+const cjsResult = await Bun.build({
+  entrypoints: ['./src/index.ts'],
+  outdir: './dist',
+  format: 'cjs',
+  target: 'node',
+  sourcemap: 'external',
+  minify: false,
+  naming: '[dir]/[name].cjs',
+})
+
+if (!cjsResult.success) {
+  console.error('❌ CJS build failed:')
+  for (const log of cjsResult.logs) {
     console.error(log)
   }
   process.exit(1)
@@ -32,5 +51,6 @@ if (tscResult.exitCode !== 0) {
 }
 
 console.log('✅ Build completed successfully!')
-console.log('   - dist/index.js (ESM)')
+console.log('   - dist/index.mjs (ESM)')
+console.log('   - dist/index.cjs (CJS)')
 console.log('   - dist/index.d.ts (Types)')

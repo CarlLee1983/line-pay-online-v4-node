@@ -2,15 +2,15 @@
   "name": "line-pay-online-v4",
   "version": "1.5.0",
   "description": "Modern, type-safe LINE Pay Online V4 API SDK for Node.js & Bun. Features Builder Pattern, full TypeScript support, ESM/CJS dual modules, zero dependencies, and 100% test coverage. Supports Taiwan, Japan, and Thailand regions.",
-  "module": "./dist/index.js",
-  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
   "type": "module",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     }
   },
   "files": [
