@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0](https://github.com/CarlLee1983/line-pay-online-v4-node/compare/v1.4.0...v1.5.0) (2025-12-11)
+
+
+### Features
+
+* Add Japanese and Thai READMEs, update language navigation in existing READMEs, and adjust the pre-commit hook. ([3294204](https://github.com/CarlLee1983/line-pay-online-v4-node/commit/3294204b28d00d80a2a5afb6629459eb193102e9))
+
 ## [1.4.0](https://github.com/CarlLee1983/line-pay-online-v4-node/compare/v1.3.0...v1.4.0) (2025-12-11)
 
 
