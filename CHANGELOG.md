@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0](https://github.com/CarlLee1983/line-pay-online-v4-node/compare/v1.3.0...v1.4.0) (2025-12-11)
+
+
+### Features
+
+* Consolidate build to a single ESM output, streamline package exports, and update `line-pay-core-v4` dependency. ([267e1d7](https://github.com/CarlLee1983/line-pay-online-v4-node/commit/267e1d7fd177e6573b50dc673b89750578c668ac))
+
 ## [1.3.0](https://github.com/CarlLee1983/line-pay-online-v4-node/compare/v1.2.0...v1.3.0) (2025-12-10)
 
 
