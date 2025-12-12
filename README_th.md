@@ -1,8 +1,8 @@
-# @carllee1983/line-pay-v4
+# line-pay-online-v4
 
-[![npm version](https://img.shields.io/npm/v/@carllee1983/line-pay-v4.svg)](https://www.npmjs.com/package/@carllee1983/line-pay-v4)
-[![CI](https://github.com/CarlLee1983/line-pay-v4-node/actions/workflows/ci.yml/badge.svg)](https://github.com/CarlLee1983/line-pay-v4-node/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/CarlLee1983/line-pay-v4-node)
+[![npm version](https://img.shields.io/npm/v/line-pay-online-v4.svg)](https://www.npmjs.com/package/line-pay-online-v4)
+[![CI](https://github.com/CarlLee1983/line-pay-online-v4-node/actions/workflows/ci.yml/badge.svg)](https://github.com/CarlLee1983/line-pay-online-v4-node/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/CarlLee1983/line-pay-online-v4-node)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 
@@ -23,16 +23,16 @@ LINE Pay V4 API SDK สำหรับ Node.js - ปลอดภัยด้า�
 
 ```bash
 # npm
-npm install @carllee1983/line-pay-v4
+npm install line-pay-online-v4
 
 # yarn
-yarn add @carllee1983/line-pay-v4
+yarn add line-pay-online-v4
 
 # pnpm
-pnpm add @carllee1983/line-pay-v4
+pnpm add line-pay-online-v4
 
 # bun
-bun add @carllee1983/line-pay-v4
+bun add line-pay-online-v4
 ```
 
 ## 🚀 การใช้งาน
@@ -40,7 +40,7 @@ bun add @carllee1983/line-pay-v4
 ### 1. สร้าง Client
 
 ```typescript
-import { LinePayClient } from '@carllee1983/line-pay-v4'
+import { LinePayClient } from 'line-pay-online-v4'
 
 const client = new LinePayClient({
   channelId: 'YOUR_CHANNEL_ID',
@@ -232,7 +232,7 @@ SDK มี class `LinePayUtils` สำหรับงานทั่วไป
 ดึง `transactionId` และ `orderId` จาก query ของ Confirm URL
 
 ```typescript
-import { LinePayUtils } from '@carllee1983/line-pay-v4'
+import { LinePayUtils } from 'line-pay-online-v4'
 
 // ใน callback handler ของคุณ (เช่น Express)
 const { transactionId, orderId } = LinePayUtils.parseConfirmQuery(req.query)
@@ -248,7 +248,7 @@ const isValid = LinePayUtils.verifySignature(channelSecret, body, signature)
 ## 🏗️ โครงสร้างโปรเจกต์
 
 ```
-@carllee1983/line-pay-v4/
+line-pay-online-v4/
 ├── src/                    # ซอร์สโค้ด
 ├── examples/               # ตัวอย่างการใช้งาน
 │   └── nextjs-demo/       # ตัวอย่าง Next.js App Router

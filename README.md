@@ -1,8 +1,8 @@
-# @carllee1983/line-pay-v4
+# line-pay-online-v4
 
-[![npm version](https://img.shields.io/npm/v/@carllee1983/line-pay-v4.svg)](https://www.npmjs.com/package/@carllee1983/line-pay-v4)
-[![CI](https://github.com/CarlLee1983/line-pay-v4-node/actions/workflows/ci.yml/badge.svg)](https://github.com/CarlLee1983/line-pay-v4-node/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/CarlLee1983/line-pay-v4-node)
+[![npm version](https://img.shields.io/npm/v/line-pay-online-v4.svg)](https://www.npmjs.com/package/line-pay-online-v4)
+[![CI](https://github.com/CarlLee1983/line-pay-online-v4-node/actions/workflows/ci.yml/badge.svg)](https://github.com/CarlLee1983/line-pay-online-v4-node/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/CarlLee1983/line-pay-online-v4-node)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 
@@ -23,16 +23,16 @@ LINE Pay V4 API SDK for Node.js - Type-safe, modern, and production-ready.
 
 ```bash
 # npm
-npm install @carllee1983/line-pay-v4
+npm install line-pay-online-v4
 
 # yarn
-yarn add @carllee1983/line-pay-v4
+yarn add line-pay-online-v4
 
 # pnpm
-pnpm add @carllee1983/line-pay-v4
+pnpm add line-pay-online-v4
 
 # bun
-bun add @carllee1983/line-pay-v4
+bun add line-pay-online-v4
 ```
 
 ## 🚀 Usage
@@ -40,7 +40,7 @@ bun add @carllee1983/line-pay-v4
 ### 1. Initialize Client
 
 ```typescript
-import { LinePayClient } from '@carllee1983/line-pay-v4'
+import { LinePayClient } from 'line-pay-online-v4'
 
 const client = new LinePayClient({
   channelId: 'YOUR_CHANNEL_ID',
@@ -146,6 +146,26 @@ The user confirms the payment on the LINE Pay payment page. Upon success, LINE P
 
 `https://your-domain.com/pay/confirm?transactionId=123456789&orderId=ORDER_...`
 
+### Payment Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Server as Merchant Server
+    participant LINE as LINE Pay API
+
+    User->>Server: 1. Click Checkout
+    Server->>LINE: 2. Request Payment API
+    LINE-->>Server: Return paymentUrl & transactionId
+    Server-->>User: 3. Redirect to paymentUrl
+    User->>LINE: 4. Approve Payment (on LINE App/Web)
+    LINE-->>User: 5. Redirect to confirmUrl
+    User->>Server: 6. Callback (transactionId & orderId)
+    Server->>LINE: 7. Confirm API
+    LINE-->>Server: Payment Completed
+    Server-->>User: 8. Show Success Page
+```
+
 #### Step 3: Confirm Payment
 
 When the user returns to your `confirmUrl`, you **MUST** call the Confirm API to finalize the transaction. If not called within the expiration window, the transaction will lapse.
@@ -232,7 +252,7 @@ The SDK provides a `LinePayUtils` class for common tasks.
 Extract `transactionId` and `orderId` from the Confirm URL query.
 
 ```typescript
-import { LinePayUtils } from '@carllee1983/line-pay-v4'
+import { LinePayUtils } from 'line-pay-online-v4'
 
 // In your callback handler (e.g. Express)
 const { transactionId, orderId } = LinePayUtils.parseConfirmQuery(req.query)
@@ -248,7 +268,7 @@ const isValid = LinePayUtils.verifySignature(channelSecret, body, signature)
 ## 🏗️ Project Structure
 
 ```
-@carllee1983/line-pay-v4/
+line-pay-online-v4/
 ├── src/                    # Source code
 ├── examples/               # Usage examples
 │   └── nextjs-demo/       # Next.js App Router example
